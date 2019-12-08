@@ -5,9 +5,7 @@ import com.example.featuredToDoApp.mySQLTable.ToDoListTable;
 import com.example.featuredToDoApp.mySQLTable.UsersTable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
 
@@ -145,5 +143,17 @@ public class MainController {
     }
 
 
+    // new apis by palash
+
+    @RequestMapping(path = "/addNewTodo", method = RequestMethod.POST)
+    public @ResponseBody ToDoListTable addNewTodo(@RequestBody ToDoListTable todo){
+        todo.setEntryDate(new Date());
+        return toRep.save(todo);
+    }
+
+    @RequestMapping(path = "/updateTodo",method = RequestMethod.POST)
+    public @ResponseBody ToDoListTable updateTodo(@RequestBody ToDoListTable todo){
+        return toRep.save(todo);
+    }
 
 }
