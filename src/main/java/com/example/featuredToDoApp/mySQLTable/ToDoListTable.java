@@ -13,6 +13,8 @@ public class ToDoListTable {
 
     private Integer userId;
 
+    private String title;
+
     private String description;
 
     private Integer parentId;
@@ -27,8 +29,9 @@ public class ToDoListTable {
 
     public ToDoListTable() {}
 
-    public ToDoListTable(Integer userId, String description, Integer parentId, Date expiryDate)    {
+    public ToDoListTable(Integer userId, String title, String description, Integer parentId, Date expiryDate)    {
         this.userId = userId;
+        this.title = title;
         this.description = description;
         this.parentId = parentId;
         this.entryDate = new Date();
@@ -67,6 +70,18 @@ public class ToDoListTable {
 
     public void setExpiryDate(Date expiryDate) {
         this.expiryDate = expiryDate;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public boolean isHasExpired() {
+        return hasExpired;
     }
 
     public Integer getId() {

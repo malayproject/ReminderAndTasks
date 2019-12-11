@@ -9,7 +9,7 @@ import java.util.List;
 public interface UsersTableRepository extends CrudRepository<UsersTable, Integer>   {
 
 
-
+//********************************************************************************************************************
     @Query(value = "SELECT u FROM UsersTable u")
     List<UsersTable> getAllUsers();
 

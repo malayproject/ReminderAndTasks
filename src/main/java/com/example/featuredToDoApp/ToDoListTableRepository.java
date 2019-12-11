@@ -63,6 +63,14 @@ public interface ToDoListTableRepository extends CrudRepository<ToDoListTable, I
     @Query("SELECT u.expiryDate, u FROM ToDoListTable u WHERE u.userId =: givenId ORDER BY u.expiryDate")
     List<Object> listToDosByExp(@Param("givenId") Integer givenId);
 
+    //****************************************************************************************************************
+
+    @Query("SELECT COUNT(u) FROM ToDoListTable u WHERE u.userId =: givenId")
+    Integer getCountUserToDosR(Integer givenId);
+
+    @Query("SELECT COUNT(u) FROM ToDoListTable u WHERE u.userId =: givenId AND isDone = false")
+    Integer getCountUserPendToDosR(Integer givenId);
+
 // This will be AUTO IMPLEMENTED by Spring into a Bean called userRepository
 // CRUD refers Create, Read, Update, Delete
 }

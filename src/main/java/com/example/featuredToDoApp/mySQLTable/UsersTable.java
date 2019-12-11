@@ -15,6 +15,10 @@ public class UsersTable {
 
     private String lName;
 
+    //private String mailId;
+
+    //private String passHash;
+
     private Date userAddedDate;
 
     public UsersTable(){}
@@ -22,8 +26,26 @@ public class UsersTable {
     public UsersTable(String fName, String lName)  {
         this.fName = fName;
         this.lName = lName;
+        /*this.mailId = mailId;
+        this.passHash = passHash;*/
         this.userAddedDate = new Date();
     }
+
+    /*public String getMailId() {
+        return mailId;
+    }
+
+    public void setMailId(String mailId) {
+        this.mailId = mailId;
+    }
+
+    public String getPassHash() {
+        return passHash;
+    }
+
+    public void setPassHash(String passHash) {
+        this.passHash = passHash;
+    }*/
 
     public Integer getUserId() {
         return userId;
@@ -58,7 +80,6 @@ public class UsersTable {
     }
 
     public String toString()    {
-
-        return this.getUserId() + ", " + this.fName + " " + this.lName;
+        return this.getUserId() + ", " + this.fName + " " + this.lName + ", " + this.userAddedDate;
     }
 }

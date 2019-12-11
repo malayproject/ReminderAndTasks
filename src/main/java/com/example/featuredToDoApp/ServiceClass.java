@@ -1,6 +1,8 @@
 package com.example.featuredToDoApp;
 
+import com.example.featuredToDoApp.mySQLTable.ToDoJson;
 import com.example.featuredToDoApp.mySQLTable.ToDoListTable;
+import com.example.featuredToDoApp.mySQLTable.UserJson;
 import com.example.featuredToDoApp.mySQLTable.UsersTable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,14 +18,33 @@ public class ServiceClass {
     @Autowired
     private UsersTableRepository uRep;
 
+    @Autowired
+    private ServiceClass sc;
+
+    private static Map<String, Integer> monthInInt = new HashMap<>();
+    static  {
+        monthInInt.put("Jan", 1);
+        monthInInt.put("Feb", 2);
+        monthInInt.put("Mar", 3);
+        monthInInt.put("Apr", 4);
+        monthInInt.put("May", 5);
+        monthInInt.put("Jun", 6);
+        monthInInt.put("Jul", 7);
+        monthInInt.put("Aug", 8);
+        monthInInt.put("Sep", 9);
+        monthInInt.put("Oct", 10);
+        monthInInt.put("Nov", 11);
+        monthInInt.put("Dec", 12);
+    }
+
     static boolean dateValidator(Date expiryDate)  {
         return expiryDate.after(new Date());
     }
 
-    void postChildToDoToDB(Integer userId, Integer parentId, String description, Integer year, Integer month, Integer date)  {
+    void postChildToDoToDB(Integer userId, Integer parentId, String title, String description, Integer year, Integer month, Integer date)  {
         Date tempExpDate = new Date(year - 1900, month - 1, date);
         if(dateValidator(tempExpDate)) {
-            ToDoListTable newToDo = new ToDoListTable(userId, description, parentId, tempExpDate);
+            ToDoListTable newToDo = new ToDoListTable(userId, title, description, parentId, tempExpDate);
             newToDo = toRep.save(newToDo);
         }
     }
@@ -234,6 +255,69 @@ public class ServiceClass {
             m.put(todos.get(i), todos.get(i).getExpiryDate());
         }
         return m;
+    }
+
+//***************************************************************************************************************************
+    //by url parameters on 10-12
+
+    UsersTable addNewUserS(String fName, String lName)   {
+        UsersTable user = new UsersTable(fName, lName);
+        user = uRep.save(user);
+        return user;
+    }
+
+
+    //by json request on 10-12
+    UsersTable addNewUserS(UserJson newUser)   {
+        String fName = newUser.getfName();
+        String lName = newUser.getlName();
+        UsersTable user = new UsersTable(fName, lName);
+        user = uRep.save(user);
+        return user;
+    }
+
+    //
+    List<UsersTable> getAllUsersS() {
+        return uRep.getAllUsers();
+    }
+
+    //
+    public ToDoListTable addToDoS(Integer userId, String title, String description,
+                                               Integer year, Integer month, Integer date)   {
+        Date tempExpiryDate = new Date(year-1900, month-1, date);
+        if(dateValidator(tempExpiryDate)) {
+            ToDoListTable toDoElement = new ToDoListTable(userId, title, description, 0, tempExpiryDate);
+            toDoElement = toRep.save(toDoElement);
+            return toDoElement;
+        }
+        else return null;
+    }
+
+    public ToDoListTable addToDoS(ToDoJson jsonReq)   {
+        Integer userId = jsonReq.getUserId();
+        String title = jsonReq.getTitle();
+        String description = jsonReq.getDescription();
+        String dateString = jsonReq.getExpiryDate();
+
+        Integer year = Integer.valueOf(dateString.substring(8));
+        Integer month = monthInInt.get(dateString.substring(0,3));
+        Integer date = Integer.valueOf(dateString.substring(4,6));
+
+        Date tempExpiryDate = new Date(year-1900, month-1, date);
+        if(dateValidator(tempExpiryDate)) {
+            ToDoListTable toDoElement = new ToDoListTable(userId, title, description, 0, tempExpiryDate);
+            toDoElement = toRep.save(toDoElement);
+            return toDoElement;
+        }
+        else return null;
+    }
+
+    public Integer getCountUserToDosS(Integer userId) {
+        return toRep.getCountUserToDosR(userId);
+    }
+
+    public Integer getCountUserPendToDosS(Integer userId)   {
+        return toRep.getCountUserPendToDosR(userId);
     }
 
 
