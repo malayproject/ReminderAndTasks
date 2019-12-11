@@ -1,7 +1,9 @@
 package com.example.featuredToDoApp;
 
 
+import com.example.featuredToDoApp.mySQLTable.ToDoJson;
 import com.example.featuredToDoApp.mySQLTable.ToDoListTable;
+import com.example.featuredToDoApp.mySQLTable.UserJson;
 import com.example.featuredToDoApp.mySQLTable.UsersTable;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -22,20 +24,50 @@ public class MainController {
     @Autowired
     private ToDoListTableRepository toRep;
 
-
-    @RequestMapping(path = "/newUser")
-    public @ResponseBody Object insertNewUser(@RequestParam String fName, @RequestParam String lName) {
-        UsersTable user = new UsersTable(fName, lName);
-        user = uRep.save(user);
-        return user;
+    //by requestParam on 10-12
+    @RequestMapping(path = "/newUser", method = RequestMethod.POST)
+    public @ResponseBody UsersTable addNewUser(@RequestParam String fName, @RequestParam String lName) {
+        return sc.addNewUserS(fName, lName);
     }
 
+    //request by json on 10-12
+    @RequestMapping(path = "/newUser", method = RequestMethod.POST)
+    public @ResponseBody UsersTable addNewUser(@RequestBody UserJson newUser) {
+        return sc.addNewUserS(newUser);
+    }
 
-    @RequestMapping(path = "/getUsers")
+    //
+    @RequestMapping(path = "/getAllUsers", method = RequestMethod.GET)
     public @ResponseBody List<UsersTable> getAllUsers()    {
-        return uRep.getAllUsers();
+        return sc.getAllUsersS();
     }
 
+    //request by requestParam
+    ToDoListTable addToDoS(@RequestParam Integer userId, @RequestParam String title, @RequestParam String description,
+                           @RequestParam Integer year, @RequestParam Integer month, @RequestParam Integer date) {
+        return sc.addToDoS(userId, title, description, year, month, date);
+    }
+
+    //request by json
+    @RequestMapping(path = "/addToDo", method = RequestMethod.POST)
+    public @ResponseBody ToDoListTable addToDo(@RequestBody ToDoJson jsonReq)    {
+        return sc.addToDoS(jsonReq);
+    }
+
+
+
+    //request by json or requestParam
+    @RequestMapping(path = "/getCountUserToDos")
+    public @ResponseBody Integer getCountUserToDos(@RequestBody Integer userId) {
+        return sc.getCountUserToDosS(userId);
+    }
+
+    //request by json or requestParam
+    //@RequestMapping()
+
+
+
+//********************************************************************************************************************************************************
 
     @RequestMapping(path = "/getAllParentToDos")
     public @ResponseBody Object getAllToDos()  {
@@ -48,17 +80,7 @@ public class MainController {
     }
 
 
-    @RequestMapping(path = "/addToDo")
-    public @ResponseBody Object postData(@RequestParam Integer userId, @RequestParam String description,
-                                         @RequestParam Integer year, @RequestParam Integer month, @RequestParam Integer date)   {
-        Date tempExpiryDate = new Date(year-1900, month-1, date);
-        if(sc.dateValidator(tempExpiryDate)) {
-            ToDoListTable toDoElement = new ToDoListTable(userId, description, 0, tempExpiryDate);
-            toDoElement = toRep.save(toDoElement);
-            return toDoElement;
-        }
-        else return "Invalid expiry date.";
-    }
+
 
 
     @RequestMapping(path = "/getToDo")
@@ -122,11 +144,11 @@ public class MainController {
 
 
     @RequestMapping(path = "/addChildToDo")
-    public @ResponseBody Object postChildToDo(@RequestParam Integer userId, @RequestParam Integer parentId,
+    public @ResponseBody Object postChildToDo(@RequestParam Integer userId, @RequestParam Integer parentId,@RequestParam String title,
                                               @RequestParam String description,@RequestParam Integer year,
                                               @RequestParam Integer month, @RequestParam Integer date)    {
 
-        sc.postChildToDoToDB(userId, parentId, description, year, month, date);
+        sc.postChildToDoToDB(userId, parentId, title, description, year, month, date);
 
         return "success";
     }
@@ -155,5 +177,7 @@ public class MainController {
     public @ResponseBody ToDoListTable updateTodo(@RequestBody ToDoListTable todo){
         return toRep.save(todo);
     }
+
+
 
 }
