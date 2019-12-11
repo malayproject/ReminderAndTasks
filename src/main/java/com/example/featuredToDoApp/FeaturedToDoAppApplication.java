@@ -8,6 +8,5 @@ public class FeaturedToDoAppApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(FeaturedToDoAppApplication.class, args);
-
 	}
 }
